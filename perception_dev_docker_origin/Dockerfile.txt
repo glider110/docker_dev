@@ -61,17 +61,6 @@ RUN sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote'
 RUN sed -i 's/Prompt=.*/Prompt=never/' /etc/update-manager/release-upgrades
 RUN sed -i 's/enabled=1/enabled=0/g' /etc/default/apport
 
-# Install Firefox
-# RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:mozillateam/ppa -y && \
-#     echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
-#     echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
-#     echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox && \
-#     apt-get update -q && \
-#     apt-get install -y \
-#     firefox && \
-#     apt-get autoclean && \
-#     apt-get autoremove && \
-#     rm -rf /var/lib/apt/lists/*
 
 # Install VSCodium
 RUN wget https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
@@ -92,19 +81,21 @@ ARG INSTALL_PACKAGE=desktop
 RUN apt-get update -q && \
     apt-get install -y curl gnupg2 lsb-release && \
     curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] https://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null && \
     apt-get update -q && \
     apt-get install -y ros-${ROS_DISTRO}-${INSTALL_PACKAGE} \
     python3-argcomplete \
     python3-colcon-common-extensions \
     python3-rosdep python3-vcstool && \
-    rosdep init && \
+    mkdir -p /etc/ros/rosdep/sources.list.d/ && \
+    echo "yaml https://mirrors.tuna.tsinghua.edu.cn/rosdistro/rosdep/osx-homebrew.yaml osx" > /etc/ros/rosdep/sources.list.d/20-default.list && \
+    echo "yaml https://mirrors.tuna.tsinghua.edu.cn/rosdistro/rosdep/base.yaml" >> /etc/ros/rosdep/sources.list.d/20-default.list && \
+    echo "yaml https://mirrors.tuna.tsinghua.edu.cn/rosdistro/rosdep/python.yaml" >> /etc/ros/rosdep/sources.list.d/20-default.list && \
+    echo "yaml https://mirrors.tuna.tsinghua.edu.cn/rosdistro/rosdep/ruby.yaml" >> /etc/ros/rosdep/sources.list.d/20-default.list && \
     rm -rf /var/lib/apt/lists/*
 
 # Use Tsinghua mirror for rosdep to avoid timeout
 RUN export ROSDISTRO_INDEX_URL=https://mirrors.tuna.tsinghua.edu.cn/rosdistro/index-v4.yaml && \
-    sed -i 's/raw.githubusercontent.com\/ros\/rosdistro\/master/mirrors.tuna.tsinghua.edu.cn\/rosdistro/g' /etc/ros/rosdep/sources.list.d/20-default.list && \
-    sed -i '/fuerte/d' /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep update
 
 # Install simulation package only on amd64
@@ -126,7 +117,7 @@ RUN dos2unix /entrypoint.sh && chmod +x /entrypoint.sh
 ENTRYPOINT [ "/bin/bash", "-c", "/entrypoint.sh" ]
 
 ENV USER=ubuntu
-ENV PASSWD=ubuntu
+ENV PASSWD=1
 
 # Install oh-my-zsh
 RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /opt/oh-my-zsh

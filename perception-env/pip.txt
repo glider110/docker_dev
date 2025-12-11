@@ -1,0 +1,1 @@
+git+https://github.com/novnc/websockify.git@v0.10.0

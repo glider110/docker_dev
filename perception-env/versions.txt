@@ -1,0 +1,4 @@
+BASE_IMAGE=ubuntu:jammy
+ROS_DISTRO=humble
+NOVNC_BRANCH=add_clipboard_support
+WEBSOCKIFY_VERSION=v0.10.0
