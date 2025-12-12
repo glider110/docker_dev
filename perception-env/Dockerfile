@@ -50,7 +50,6 @@ RUN git config --global http.version HTTP/1.1
 
 # noVNC setup (match origin)
 RUN git clone https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc
-RUN pip install git+https://github.com/novnc/websockify.git@v0.10.0
 RUN ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html
 RUN sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote');/g" /usr/lib/novnc/app/ui.js
 
