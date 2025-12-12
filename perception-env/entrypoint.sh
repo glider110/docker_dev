@@ -33,7 +33,9 @@ mkdir -p $HOME/.vnc
 echo $VNC_PASSWORD | vncpasswd -f > $HOME/.vnc/passwd
 chmod 600 $HOME/.vnc/passwd
 chown -R $USER:$USER $HOME
-sed -i "s/password = WebUtil.getConfigVar('password');/password = '$VNC_PASSWORD'/" /usr/lib/novnc/app/ui.js
+if [ -f "/usr/lib/novnc/app/ui.js" ]; then
+    sed -i "s/password = WebUtil.getConfigVar('password');/password = '$VNC_PASSWORD'/" /usr/lib/novnc/app/ui.js || true
+fi
 
 # xstartup
 XSTARTUP_PATH=$HOME/.vnc/xstartup

@@ -42,10 +42,19 @@ RUN apt-get update -q && \
 # Install Python packages
 RUN pip install -r /tmp/pip.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
+# Install websockify for noVNC proxy
+RUN pip install websockify==0.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# Configure git to use HTTP/1.1 to avoid protocol errors
+RUN git config --global http.version HTTP/1.1
+
 # noVNC setup
-RUN git clone https://ghproxy.net/https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc && \
+# Use upstream repo and avoid branch that doesn't exist
+RUN git clone https://github.com/novnc/noVNC.git /usr/lib/novnc && \
     ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html && \
-    sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote');/g" /usr/lib/novnc/app/ui.js
+    sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote');/g" /usr/lib/novnc/app/ui.js && \
+    # Remove clipboard import that upstream may not export
+    sed -i "s/.*browserAsyncClipboardSupport.*//" /usr/lib/novnc/app/ui.js || true
 
 # Disable auto update and crash report
 RUN sed -i 's/Prompt=.*/Prompt=never/' /etc/update-manager/release-upgrades && \
@@ -65,7 +74,7 @@ RUN mkdir -p /etc/ros/rosdep/sources.list.d/ && \
 RUN rm /etc/apt/apt.conf.d/docker-clean
 
 # Install oh-my-zsh
-RUN git clone https://ghproxy.net/https://github.com/ohmyzsh/ohmyzsh.git /opt/oh-my-zsh
+RUN git clone https://gitclone.com/github.com/ohmyzsh/ohmyzsh.git /opt/oh-my-zsh
 
 # Entrypoint
 COPY ./entrypoint.sh /
