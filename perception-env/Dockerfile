@@ -48,13 +48,11 @@ RUN pip install websockify==0.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple
 # Configure git to use HTTP/1.1 to avoid protocol errors
 RUN git config --global http.version HTTP/1.1
 
-# noVNC setup
-# Use upstream repo and avoid branch that doesn't exist
-RUN git clone https://github.com/novnc/noVNC.git /usr/lib/novnc && \
-    ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html && \
-    sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote');/g" /usr/lib/novnc/app/ui.js && \
-    # Remove clipboard import that upstream may not export
-    sed -i "s/.*browserAsyncClipboardSupport.*//" /usr/lib/novnc/app/ui.js || true
+# noVNC setup (match origin)
+RUN git clone https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc
+RUN pip install git+https://github.com/novnc/websockify.git@v0.10.0
+RUN ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html
+RUN sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote');/g" /usr/lib/novnc/app/ui.js
 
 # Disable auto update and crash report
 RUN sed -i 's/Prompt=.*/Prompt=never/' /etc/update-manager/release-upgrades && \
