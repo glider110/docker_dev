@@ -1,0 +1,43 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'perception_dev_docker_origin/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set Docker image tags
+        id: vars
+        run: |
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          echo "tag_latest=latest" >> $GITHUB_OUTPUT
+          echo "tag_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
+          echo "tag_date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./perception_dev_docker_origin
+          file: ./perception_dev_docker_origin/Dockerfile.txt
+          push: true
+          platforms: linux/amd64
+          tags: |
+            godfery/perception-env:${{ steps.vars.outputs.tag_latest }}
+            godfery/perception-env:${{ steps.vars.outputs.tag_sha }}
+            godfery/perception-env:${{ steps.vars.outputs.tag_date }}
