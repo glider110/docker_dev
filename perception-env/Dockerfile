@@ -48,10 +48,12 @@ RUN pip install websockify==0.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple
 # Configure git to use HTTP/1.1 to avoid protocol errors
 RUN git config --global http.version HTTP/1.1
 
-# noVNC setup (match origin)
-RUN git clone https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc
-RUN ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html
-RUN sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote');/g" /usr/lib/novnc/app/ui.js
+# noVNC setup (use tarball to avoid git issues)
+RUN curl -L https://codeload.github.com/AtsushiSaito/noVNC/tar.gz/refs/heads/add_clipboard_support -o /tmp/novnc.tar.gz && \
+    mkdir -p /usr/lib/novnc && \
+    tar -xzf /tmp/novnc.tar.gz -C /usr/lib/novnc --strip-components=1 && \
+    ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html && \
+    sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote');/g" /usr/lib/novnc/app/ui.js
 
 # Disable auto update and crash report
 RUN sed -i 's/Prompt=.*/Prompt=never/' /etc/update-manager/release-upgrades && \
