@@ -13,6 +13,10 @@ COPY apt.txt /tmp/apt.txt
 COPY pip.txt /tmp/pip.txt
 COPY versions.txt /tmp/versions.txt
 
+# Change apt source to Tsinghua
+RUN sed -i 's@//.*archive.ubuntu.com@//mirrors.tuna.tsinghua.edu.cn@g' /etc/apt/sources.list && \
+    sed -i 's@//.*security.ubuntu.com@//mirrors.tuna.tsinghua.edu.cn@g' /etc/apt/sources.list
+
 # Upgrade OS and Install APT packages
 RUN apt-get update -q && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
@@ -36,10 +40,10 @@ RUN apt-get update -q && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Python packages
-RUN pip install -r /tmp/pip.txt
+RUN pip install -r /tmp/pip.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # noVNC setup
-RUN git clone https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc && \
+RUN git clone https://mirror.ghproxy.com/https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc && \
     ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html && \
     sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote');/g" /usr/lib/novnc/app/ui.js
 
@@ -61,7 +65,7 @@ RUN mkdir -p /etc/ros/rosdep/sources.list.d/ && \
 RUN rm /etc/apt/apt.conf.d/docker-clean
 
 # Install oh-my-zsh
-RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /opt/oh-my-zsh
+RUN git clone https://mirror.ghproxy.com/https://github.com/ohmyzsh/ohmyzsh.git /opt/oh-my-zsh
 
 # Entrypoint
 COPY ./entrypoint.sh /

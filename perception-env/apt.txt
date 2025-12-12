@@ -20,6 +20,7 @@ dos2unix
 net-tools
 zsh
 codium
+gedit
 gnupg2
 python3-argcomplete
 python3-colcon-common-extensions
