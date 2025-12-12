@@ -36,6 +36,6 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            godfery/perception-env:${{ steps.vars.outputs.tag_latest }}
-            godfery/perception-env:${{ steps.vars.outputs.tag_sha }}
-            godfery/perception-env:${{ steps.vars.outputs.tag_date }}
+            godfery110/perception_dev:${{ steps.vars.outputs.tag_latest }}
+            godfery110/perception_dev:${{ steps.vars.outputs.tag_sha }}
+            godfery110/perception_dev:${{ steps.vars.outputs.tag_date }}
