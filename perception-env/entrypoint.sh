@@ -47,6 +47,22 @@ EOF
 chown $USER:$USER $XSTARTUP_PATH
 chmod 755 $XSTARTUP_PATH
 
+# Setup locale and input method (Chinese)
+echo "Configuring zh_CN.UTF-8 locale and fcitx5 input method"
+sed -i 's/^# *zh_CN.UTF-8/zh_CN.UTF-8/' /etc/locale.gen || true
+locale-gen zh_CN.UTF-8 || true
+update-locale LANG=zh_CN.UTF-8 || true
+
+# Set fcitx5 environment variables
+IM_ENV_PATH=$HOME/.xinputrc
+cat << EOF > $IM_ENV_PATH
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export DefaultIM=fcitx5
+EOF
+chown $USER:$USER $IM_ENV_PATH
+
 # Fix hostname resolution for vncserver
 echo "Current hostname: $(hostname)"
 if ! grep -q "127.0.0.1 $(hostname)" /etc/hosts; then

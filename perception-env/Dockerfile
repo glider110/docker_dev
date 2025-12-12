@@ -78,5 +78,19 @@ COPY ./entrypoint.sh /
 RUN dos2unix /entrypoint.sh && chmod +x /entrypoint.sh
 ENTRYPOINT [ "/bin/bash", "-c", "/entrypoint.sh" ]
 
-ENV USER=ubuntu
+ENV USER=godfery
 ENV PASSWD=1
+
+# Install latest Google Chrome
+RUN wget -qO - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-linux-signing-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list && \
+    apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y google-chrome-stable && \
+    apt-get autoclean && apt-get autoremove && rm -rf /var/lib/apt/lists/*
+
+# Install latest Visual Studio Code
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/microsoft-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/microsoft-keyring.gpg] https://packages.microsoft.com/repos/code stable main" | tee /etc/apt/sources.list.d/vscode.list && \
+    apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y code && \
+    apt-get autoclean && apt-get autoremove && rm -rf /var/lib/apt/lists/*

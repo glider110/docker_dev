@@ -5,7 +5,7 @@ CONTAINER_NAME="perception-container"
 
 echo "Running container: $CONTAINER_NAME from image: $IMAGE_NAME"
 
-docker run -it --rm \
+docker run -it -d \
     --name "$CONTAINER_NAME" \
     --net=host \
     --privileged \
