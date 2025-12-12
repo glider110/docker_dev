@@ -44,8 +44,8 @@ jobs:
         with:
           # context: ./perception_dev_docker_origin
           # file: ./perception_dev_docker_origin/Dockerfile.txt
-          context: ./perception_dev
-          file: ./perception_dev/Dockerfile.txt
+          context: ./perception_env
+          file: ./perception_env/Dockerfile.txt
           push: true
           platforms: linux/amd64
           tags: |
