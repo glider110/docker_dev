@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'perception_dev_docker_origin/**'
   workflow_dispatch:
 
 jobs:
