@@ -42,6 +42,7 @@ XSTARTUP_PATH=$HOME/.vnc/xstartup
 cat << EOF > $XSTARTUP_PATH
 #!/bin/sh
 unset DBUS_SESSION_BUS_ADDRESS
+fcitx5 -d &
 mate-session
 EOF
 chown $USER:$USER $XSTARTUP_PATH
@@ -62,6 +63,38 @@ export XMODIFIERS=@im=fcitx
 export DefaultIM=fcitx5
 EOF
 chown $USER:$USER $IM_ENV_PATH
+
+# Configure fcitx5 to use Rime by default
+mkdir -p $HOME/.config/fcitx5
+cat << EOF > $HOME/.config/fcitx5/profile
+[Groups/0]
+Name=Default
+Default Layout=us
+DefaultIM=rime
+
+[Groups/0/Items/0]
+Name=keyboard-us
+Layout=
+
+[Groups/0/Items/1]
+Name=rime
+Layout=
+
+[GroupOrder]
+0=Default
+EOF
+
+# Configure Rime to use Simplified Chinese (Luna Pinyin Simp) by default
+mkdir -p $HOME/.local/share/fcitx5/rime
+cat << EOF > $HOME/.local/share/fcitx5/rime/default.custom.yaml
+patch:
+  schema_list:
+    - schema: luna_pinyin_simp
+    - schema: luna_pinyin
+EOF
+
+chown -R $USER:$USER $HOME/.config
+chown -R $USER:$USER $HOME/.local
 
 # Fix hostname resolution for vncserver
 echo "Current hostname: $(hostname)"

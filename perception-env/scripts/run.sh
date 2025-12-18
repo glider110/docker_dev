@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IMAGE_NAME="perception-env:latest"
-CONTAINER_NAME="perception-env-v1"
+CONTAINER_NAME="perception-env-v2"
 
 echo "Running container: $CONTAINER_NAME from image: $IMAGE_NAME"
 

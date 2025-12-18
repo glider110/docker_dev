@@ -74,7 +74,7 @@ RUN rm /etc/apt/apt.conf.d/docker-clean
 
 # Install oh-my-zsh
 RUN git clone https://gitclone.com/github.com/ohmyzsh/ohmyzsh.git /opt/oh-my-zsh && \
-    git clone --depth=1 https://gitclone.com/github.com/romkatv/powerlevel10k.git /opt/oh-my-zsh/custom/themes/powerlevel10k
+    git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git /opt/oh-my-zsh/custom/themes/powerlevel10k
 
 # Entrypoint
 COPY ./entrypoint.sh /
