@@ -8,8 +8,8 @@ if [ "$USER" != "root" ]; then
     useradd --create-home --shell /bin/zsh --user-group --groups adm,sudo $USER
     echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
     if [ -z "$PASSWORD" ]; then
-        echo "  set default password to \"ubuntu\""
-        PASSWORD=ubuntu
+        echo "  set default password to \"1\""
+        PASSWORD=1
     fi
     HOME=/home/$USER
     echo "$USER:$PASSWORD" | /usr/sbin/chpasswd 2> /dev/null || echo ""
@@ -19,7 +19,7 @@ if [ "$USER" != "root" ]; then
     if [ -d "/opt/oh-my-zsh" ]; then
         cp -r /opt/oh-my-zsh $HOME/.oh-my-zsh
         cp /opt/oh-my-zsh/templates/zshrc.zsh-template $HOME/.zshrc
-        sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnoster"/' $HOME/.zshrc
+        sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' $HOME/.zshrc
     fi
 
     chown -R $USER:$USER ${HOME}
@@ -27,7 +27,7 @@ if [ "$USER" != "root" ]; then
 fi
 
 # VNC password
-VNC_PASSWORD=${PASSWORD:-ubuntu}
+VNC_PASSWORD=${PASSWORD:-1}
 
 mkdir -p $HOME/.vnc
 echo $VNC_PASSWORD | vncpasswd -f > $HOME/.vnc/passwd
