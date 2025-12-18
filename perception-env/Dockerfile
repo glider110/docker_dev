@@ -73,7 +73,7 @@ RUN mkdir -p /etc/ros/rosdep/sources.list.d/ && \
 RUN rm /etc/apt/apt.conf.d/docker-clean
 
 # Install oh-my-zsh
-RUN git clone https://gitclone.com/github.com/ohmyzsh/ohmyzsh.git /opt/oh-my-zsh && \
+RUN git clone https://gitee.com/mirrors/oh-my-zsh.git /opt/oh-my-zsh && \
     git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git /opt/oh-my-zsh/custom/themes/powerlevel10k && \
     curl -L https://gitee.com/romkatv/powerlevel10k/raw/master/config/p10k-lean.zsh -o /opt/p10k.zsh
 
