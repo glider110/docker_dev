@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IMAGE_NAME="perception-env:latest"
-CONTAINER_NAME="perception-env-v2"
+CONTAINER_NAME="perception-env-v3"
 
 echo "Running container: $CONTAINER_NAME from image: $IMAGE_NAME"
 
@@ -24,7 +24,4 @@ docker run -d \
   -v ~/docker_persist/home_godfery:/home/godfery \
   -e VNC_RESOLUTION=1920x1080 \
   -e VNC_PASSWORD=1 \
-  -e http_proxy=http://127.0.0.1:7890 \
-  -e https_proxy=http://127.0.0.1:7890 \
-  -e all_proxy=socks5://127.0.0.1:7890 \
   "$IMAGE_NAME"

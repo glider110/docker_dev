@@ -74,7 +74,8 @@ RUN rm /etc/apt/apt.conf.d/docker-clean
 
 # Install oh-my-zsh
 RUN git clone https://gitclone.com/github.com/ohmyzsh/ohmyzsh.git /opt/oh-my-zsh && \
-    git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git /opt/oh-my-zsh/custom/themes/powerlevel10k
+    git clone --depth=1 https://gitee.com/romkatv/powerlevel10k.git /opt/oh-my-zsh/custom/themes/powerlevel10k && \
+    curl -L https://gitee.com/romkatv/powerlevel10k/raw/master/config/p10k-lean.zsh -o /opt/p10k.zsh
 
 # Entrypoint
 COPY ./entrypoint.sh /
@@ -92,7 +93,7 @@ RUN wget -qO - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor
     apt-get autoclean && apt-get autoremove && rm -rf /var/lib/apt/lists/*
 
 # Install latest Visual Studio Code
-RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/microsoft-keyring.gpg && \
+RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/microsoft-keyring.gpg] https://packages.microsoft.com/repos/code stable main" | tee /etc/apt/sources.list.d/vscode.list && \
     apt-get update -q && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y code && \

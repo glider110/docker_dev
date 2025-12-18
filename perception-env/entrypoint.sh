@@ -17,9 +17,30 @@ if [ "$USER" != "root" ]; then
     
     # Setup oh-my-zsh for user
     if [ -d "/opt/oh-my-zsh" ]; then
-        cp -r /opt/oh-my-zsh $HOME/.oh-my-zsh
-        cp /opt/oh-my-zsh/templates/zshrc.zsh-template $HOME/.zshrc
+        # Sync oh-my-zsh directory if missing
+        if [ ! -d "$HOME/.oh-my-zsh" ]; then
+            cp -r /opt/oh-my-zsh $HOME/.oh-my-zsh
+        fi
+
+        # Setup .zshrc if missing
+        if [ ! -f "$HOME/.zshrc" ]; then
+            cp /opt/oh-my-zsh/templates/zshrc.zsh-template $HOME/.zshrc
+            sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' $HOME/.zshrc
+        fi
+        
+        # Ensure p10k theme is set
         sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' $HOME/.zshrc
+
+        # Setup default p10k config if missing
+        if [ ! -f "$HOME/.p10k.zsh" ] && [ -f "/opt/p10k.zsh" ]; then
+            cp /opt/p10k.zsh $HOME/.p10k.zsh
+            chown $USER:$USER $HOME/.p10k.zsh
+        fi
+        
+        # Ensure .p10k.zsh is sourced
+        if ! grep -q "source ~/.p10k.zsh" $HOME/.zshrc; then
+            echo "[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh" >> $HOME/.zshrc
+        fi
     fi
 
     chown -R $USER:$USER ${HOME}
