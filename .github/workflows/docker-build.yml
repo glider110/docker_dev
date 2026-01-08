@@ -21,6 +21,10 @@ jobs:
           echo "tag_latest=latest" >> $GITHUB_OUTPUT
           echo "tag_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
           echo "tag_date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+          
+          # 获取提交信息作为说明
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          echo "commit_msg=${COMMIT_MSG}" >> $GITHUB_OUTPUT
 
       - name: Check Secrets
         env:
@@ -52,3 +56,8 @@ jobs:
             godfery110/perception-env:${{ steps.vars.outputs.tag_latest }}
             godfery110/perception-env:${{ steps.vars.outputs.tag_sha }}
             godfery110/perception-env:${{ steps.vars.outputs.tag_date }}
+          labels: |
+            org.opencontainers.image.description=${{ steps.vars.outputs.commit_msg }}
+            org.opencontainers.image.source=${{ github.event.repository.html_url }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ steps.vars.outputs.tag_date }}

@@ -50,6 +50,8 @@ docker run -d \
 
 启动后，打开浏览器访问 `http://127.0.0.1:6080`，输入 VNC 密码（默认 `1`）进入桌面。
 
+![2025-12-12_18-39](.README.assets/2025-12-12_18-39.png)
+
 > 注：Ubuntu Jammy 基础镜像在某些场景需要 `--security-opt seccomp=unconfined`，如遇到桌面/ROS 图形异常，可加上该参数。
 
 ### 代理（可选）
